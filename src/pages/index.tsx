@@ -3,11 +3,12 @@ import { UserButton } from "@clerk/nextjs";
 
 
 
+
 export default function Home() {
   return (
     <main>
     
-<div>hird Attempt</div>
+<div>Third Attempt</div>
    
    
     <div>
