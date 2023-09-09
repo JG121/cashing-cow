@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link"; // Import the Link component
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxDashboard } from "react-icons/rx";
 import { FiSettings } from "react-icons/fi";
@@ -13,31 +14,29 @@ const Sidebar = ({ isOpen, toggle }) => {
     >
       {/* Navigation Links */}
       <ul className="space-y-4">
-        {/* Add your navigation links here */}
+        {/* Use Link component for internal navigation */}
         <li>
-            <a
-              href="/"
-              className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4"
-            >
+          <Link href="/">
+            <a className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4">
               <RxDashboard className="mr-4 icon-lg" />
             </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4"
-            >
-              <HiOutlineChartBar className="mr-4 icon-lg" />
-            </a>
-          </li>
-          <li>
-            <a
-              href="settings"
-              className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4"
-            >
+          </Link>
+        </li>
+        <li>
+          <a
+            href="#"
+            className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4"
+          >
+            <HiOutlineChartBar className="mr-4 icon-lg" />
+          </a>
+        </li>
+        <li>
+          <Link href="/settings">
+            <a className="text-3xl font-semibold text-white hover:text-indigo-400 flex items-center my-4">
               <FiSettings className="mr-4 icon-lg" />
             </a>
-          </li>
+          </Link>
+        </li>
       </ul>
     </nav>
   );
