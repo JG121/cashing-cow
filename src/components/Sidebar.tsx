@@ -1,11 +1,17 @@
 import React from "react";
-import Link from "next/link"; // Import the Link component
+import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxDashboard } from "react-icons/rx";
 import { FiSettings } from "react-icons/fi";
 import { HiOutlineChartBar } from "react-icons/hi";
 
-const Sidebar = ({ isOpen, toggle }) => {
+// Add type annotations for props
+interface SidebarProps {
+  isOpen: boolean;
+  toggle: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
   return (
     <nav
       className={`${
