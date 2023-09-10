@@ -102,11 +102,12 @@ export default function Home() {
             </div>
 
             {/* Buttons */}
-            <div className="px-4 md:px-12 space-y-4 md:space-y-0 md:space-x-4">
-              <ExpenseModal/>
-              <IncomeModal/>
-              <Button onClick={toggleChartType}>Toggle Chart</Button> {/* Add this button */}
-            </div>
+<div className="px-4 md:px-12 space-y-4 md:space-y-0 md:space-x-4 flex flex-col sm:flex-row sm:space-x-4">
+  <ExpenseModal />
+  <IncomeModal />
+  <Button onClick={toggleChartType}>Toggle Chart</Button>
+</div>
+
 
             {/* Chart Section */}
             <div className="bg-gray-800 p-6 shadow-lg rounded-lg mt-8">
