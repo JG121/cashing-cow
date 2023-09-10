@@ -9,6 +9,8 @@ import { Button } from "@nextui-org/react";
 import "chart.js/auto";
 import { Bar, Line, Chart } from "react-chartjs-2"; // Import Bar and Line charts
 import NavBar from "../components/navbar";
+import ExpenseModal from "@/components/ExpenseModal";
+import IncomeModal from "@/components/IncomeModal";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("expense");
@@ -101,8 +103,8 @@ export default function Home() {
 
             {/* Buttons */}
             <div className="px-4 md:px-12 space-y-4 md:space-y-0 md:space-x-4">
-              <Button color="primary">Expense</Button>
-              <Button color="primary">Income</Button>
+              <ExpenseModal/>
+              <IncomeModal/>
               <Button onClick={toggleChartType}>Toggle Chart</Button> {/* Add this button */}
             </div>
 
