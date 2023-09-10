@@ -12,12 +12,7 @@ const Settings = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
-      {/* Mobile Navigation Toggle */}
-      <div className="md:hidden px-4 py-2">
-        <button onClick={toggleNav} className="text-white hover:text-indigo-400">
-          {isNavOpen ? "Close" : <GiHamburgerMenu className="text-3xl" />}
-        </button>
-      </div>
+    
 
       {/* Navbar */}
       <NavBar />
