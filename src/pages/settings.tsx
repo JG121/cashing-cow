@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SignOutButton } from "@clerk/nextjs";
-import Sidebar from "../components/Sidebar";
 import { GiHamburgerMenu } from "react-icons/gi";
+import NavBar from "../components/navbar"; // Import your NavBar component
 
 const Settings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -11,7 +11,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
+    <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       {/* Mobile Navigation Toggle */}
       <div className="md:hidden px-4 py-2">
         <button onClick={toggleNav} className="text-white hover:text-indigo-400">
@@ -19,8 +19,8 @@ const Settings = () => {
         </button>
       </div>
 
-      {/* Sidebar */}
-      <Sidebar isOpen={isNavOpen} toggle={toggleNav} />
+      {/* Navbar */}
+      <NavBar />
 
       {/* Main Content */}
       <main className="flex-1 bg-gray-900 p-8">
