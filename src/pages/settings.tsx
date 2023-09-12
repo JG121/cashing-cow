@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { SignOutButton } from "@clerk/nextjs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import NavBar from "../components/navbar"; // Import your NavBar component
+import { UserButton, UserProfile } from "@clerk/nextjs";
 
 const Settings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
@@ -24,6 +26,10 @@ const Settings = () => {
           <div className="text-3xl font-semibold">CashCow</div>
           {/* Add user avatar or any other header content */}
         </header>
+
+          <UserButton />
+          
+
 
         {/* Page Content */}
         <div className="container mx-auto">

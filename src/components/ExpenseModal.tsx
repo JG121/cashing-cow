@@ -1,64 +1,125 @@
-import React from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Textarea } from "@nextui-org/react";
-import {Input, Select, SelectSection, SelectItem} from "@nextui-org/react";
-import { expenseCategories } from "../components/data";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Input,
+} from "@nextui-org/react";
+import "react-datepicker/dist/react-datepicker.css";
 
-export default function App() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+// Import Firestore from Firebase
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { db } from "@/components/firebase/index"; // Import your Firebase configuration
 
+export default function ExpenseForm() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [expenseData, setExpenseData] = useState({
+    amount: "",
+    description: "",
+    date: new Date().toISOString().split("T")[0],
+  });
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
   
+    try {
+      // Validate the form data
+      if (!expenseData.amount || isNaN(expenseData.amount)) {
+        throw new Error("Amount must be a valid number.");
+      }
+  
+      // Create a new expense object
+      const newExpense = {
+        name: expenseData.description, // Use description as the name
+        amount: parseFloat(expenseData.amount),
+        description: expenseData.description,
+        date: selectedDate.toISOString().split("T")[0],
+      };
+  
+      // Add the expense to Firestore
+      const docRef = await addDoc(collection(db, "expenses"), newExpense);
+  
+      console.log("Expense added with ID: ", docRef.id);
+  
+      // Optionally, you can reset the form or perform other actions
+      setExpenseData({
+        amount: "",
+        description: "",
+        date: new Date().toISOString().split("T")[0],
+      });
+      onClose();
+    } catch (error) {
+      console.error("Error adding expense:", error.message);
+    }
+  };
+
   return (
     <>
-      <Button onPress={onOpen}>+ Expense</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
+      <Button onClick={onOpen}>Add Expense</Button>
+
+      <Modal isOpen={isOpen} onOpenChange={onClose}>
+        <ModalContent style={{ height: "80%" }}>
           {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Add Expense</ModalHeader>
+            <form onSubmit={handleFormSubmit}>
+              <ModalHeader>Add Expense</ModalHeader>
               <ModalBody>
-              <Input 
-              
-              type="number"
-              isRequired
-              label="Amount"
-              placeholder="0.00"
-              labelPlacement="outside"
-              startContent={
-                <div className="pointer-events-none flex items-center">
-                  <span className="text-default-400 text-small">$</span>
+                <div className="mb-4">
+                  <Input
+                    type="number"
+                    name="amount"
+                    placeholder="Enter Expense Amount"
+                    value={expenseData.amount}
+                    onChange={(e) =>
+                      setExpenseData({ ...expenseData, amount: e.target.value })
+                    }
+                    required
+                  />
                 </div>
-              }
-              />
-
-<Select 
-        label="Select an Expense" 
-        className="max-w-xs" 
-      >
-       {expenseCategories.map((category) => (
-  <SelectItem key={category.value} value={category.value}>
-    {category.label}
-  </SelectItem>
-))}
-
-      </Select>
-                
-             
-             <Input
-             label="Can't find Your expense write it here"
-             
-             />
-             
-             
+                <div className="mb-4">
+                  <Input
+                    type="text"
+                    name="description"
+                    placeholder="Write Your Expense Here"
+                    value={expenseData.description}
+                    onChange={(e) =>
+                      setExpenseData({
+                        ...expenseData,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Expense Date:
+                  </label>
+                  <DatePicker
+                    selected={selectedDate}
+                    onChange={handleDateChange}
+                    className="w-full p-2 rounded-lg border text-black border-gray-400 bg-gray-200"
+                    dateFormat="MM/dd/yyyy"
+                  />
+                </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                <Button variant="text" color="warning" onClick={onClose}>
+                  Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button type="submit" color="primary">
                   Add
                 </Button>
               </ModalFooter>
-            </>
+            </form>
           )}
         </ModalContent>
       </Modal>
