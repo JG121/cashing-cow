@@ -7,8 +7,21 @@ import { Bar, Line } from "react-chartjs-2";
 import NavBar from "../components/navbar";
 import ExpenseModal from "@/components/ExpenseModal";
 import IncomeModal from "@/components/IncomeModal";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/components/firebase";
+
+interface ExpenseType {
+  name: string,
+  amount: number,
+  date?: string,
+  type: string,
+ 
+}
+
 
 export default function Home() {
+
+  const expenseData:ExpenseType[]  = []
   // State variables
   const [activeTab, setActiveTab] = useState("expense");
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -17,16 +30,53 @@ export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedType, setSelectedType] = useState("all");
+  const [recentEntries, setRecentEntries] = useState(expenseData);
+  const currentUser = useUser().user?.emailAddresses[0].emailAddress
+
+
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+       
+        const querySnapshot = await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
+        //const querySnapshot = await getDocs(query(collection(db, 'expense 2', where('username','==',currentUser))));
+        let dataa = querySnapshot.docs.map((doc) => doc.data());
+
+        const dataaaaaa = dataa.map((dat)=> ({
+          name:dat.name,
+          amount:dat.amount,
+          type:dat.type,
+          //date:new Date(dat.date).toDateString()
+          //date:dat.date.toLocaleDateString(),
+        }))
+        console.log("dataa",dataaaaaa)
+        setRecentEntries(dataaaaaa as ExpenseType[]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+
+  },[])
+
 
   // User data
   const user = useUser();
 
   // Data
-  const [recentEntries, setRecentEntries] = useState([
-    { name: "Rent", amount: 1000, type: "expense", date: "2023-09-01" },
-    { name: "Groceries", amount: 200, type: "expense", date: "2023-09-02" },
-    { name: "Salary", amount: 3000, type: "income", date: "2023-09-03" },
-  ]);
+  // const [recentEntries, setRecentEntries] = useState([
+  //   { name: "Rent", amount: 1000, type: "expense", date: "2023-09-01" },
+  //   { name: "Groceries", amount: 200, type: "expense", date: "2023-09-02" },
+  //   { name: "Salary", amount: 3000, type: "income", date: "2023-09-03" },
+  // ]);
+
+
+
+ 
+
+
+
 
   // Calculated totals
   const [totalBalance, setTotalBalance] = useState<number>(0);
@@ -229,12 +279,12 @@ const addExpense = (newExpense) => {
                     const entryDate = new Date(entry.date);
                     const selectedYearInt = parseInt(selectedYear, 10);
 
-                    if (selectedDate && entry.date !== selectedDate) {
-                      return false;
-                    }
-                    if (selectedYear && entryDate.getFullYear() !== selectedYearInt) {
-                      return false;
-                    }
+                    // if (selectedDate && entry.date !== selectedDate) {
+                    //   return false;
+                    // }
+                    // if (selectedYear && entryDate.getFullYear() !== selectedYearInt) {
+                    //   return false;
+                    // }
                     if (selectedType !== "all" && entry.type !== selectedType) {
                       return false;
                     }

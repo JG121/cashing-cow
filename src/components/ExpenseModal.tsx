@@ -13,8 +13,9 @@ import {
 import "react-datepicker/dist/react-datepicker.css";
 
 // Import Firestore from Firebase
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, query } from "firebase/firestore";
 import { db } from "@/components/firebase/index"; // Import your Firebase configuration
+import { useUser } from "@clerk/nextjs";
 
 export default function ExpenseForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,6 +25,7 @@ export default function ExpenseForm() {
     description: "",
     date: new Date().toISOString().split("T")[0],
   });
+  const currentUser = useUser();
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -31,7 +33,10 @@ export default function ExpenseForm() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
+   
+ 
+
     try {
       // Validate the form data
       if (!expenseData.amount || isNaN(expenseData.amount)) {
@@ -40,16 +45,22 @@ export default function ExpenseForm() {
   
       // Create a new expense object
       const newExpense = {
+        username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description, // Use description as the name
         amount: parseFloat(expenseData.amount),
-        description: expenseData.description,
-        date: selectedDate.toISOString().split("T")[0],
+        type:"Expense",
+       // date: selectedDate.toISOString().split("T")[0],
       };
   
       // Add the expense to Firestore
-      const docRef = await addDoc(collection(db, "expenses"), newExpense);
-  
-      console.log("Expense added with ID: ", docRef.id);
+      //const docRef = await addDoc(collection(db, "expenses"), newExpense);
+      const docReff = await addDoc(collection(db, "expense 2"), newExpense);
+      // console.log("Expense added with ID: ", docRef.id);
+
+      // dataaaa.forEach((doc)=>
+      //   console.log("data",doc.data())
+      // )
+      // console.log("Datatatatatat",dataaaa);
   
       // Optionally, you can reset the form or perform other actions
       setExpenseData({
@@ -71,7 +82,7 @@ export default function ExpenseForm() {
         <ModalContent style={{ height: "80%" }}>
           {(onClose) => (
             <form onSubmit={handleFormSubmit}>
-              <ModalHeader>Add Expense</ModalHeader>
+              <ModalHeader></ModalHeader>
               <ModalBody>
                 <div className="mb-4">
                   <Input
