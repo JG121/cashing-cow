@@ -27,9 +27,9 @@ export default function ExpenseForm() {
   });
   const currentUser = useUser();
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  //const handleDateChange = (date) => {
+    //setSelectedDate(date);
+ // };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();

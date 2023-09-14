@@ -33,14 +33,19 @@ export default function Home() {
   const [recentEntries, setRecentEntries] = useState(expenseData);
   const currentUser = useUser().user?.emailAddresses[0].emailAddress
 
+    // Calculated totals
+    const [totalBalance, setTotalBalance] = useState<number>(0);
+    const [totalExpenses, setTotalExpenses] = useState<number>(0);
+    const [totalIncome, setTotalIncome] = useState<number>(0);
+
 
    useEffect(() => {
     const fetchData = async () => {
       try {
-       
-        const querySnapshot = await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
+         console.log("currentUser",currentUser)
+        const querySnapshot = currentUser && await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
         //const querySnapshot = await getDocs(query(collection(db, 'expense 2', where('username','==',currentUser))));
-        let dataa = querySnapshot.docs.map((doc) => doc.data());
+        let dataa = querySnapshot?.docs?.map((doc) => doc.data());
 
         const dataaaaaa = dataa.map((dat)=> ({
           name:dat.name,
@@ -49,6 +54,11 @@ export default function Home() {
           //date:new Date(dat.date).toDateString()
           //date:dat.date.toLocaleDateString(),
         }))
+
+        const totalSum = dataa.reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.amount;
+        }, 0);
+        setTotalExpenses(totalSum);
         console.log("dataa",dataaaaaa)
         setRecentEntries(dataaaaaa as ExpenseType[]);
       } catch (error) {
@@ -78,10 +88,7 @@ export default function Home() {
 
 
 
-  // Calculated totals
-  const [totalBalance, setTotalBalance] = useState<number>(0);
-  const [totalExpenses, setTotalExpenses] = useState<number>(0);
-  const [totalIncome, setTotalIncome] = useState<number>(0);
+
 
   // Toggle navigation sidebar
   const toggleNav = () => {
