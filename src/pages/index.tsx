@@ -43,7 +43,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
          console.log("currentUser",currentUser)
-        const querySnapshot = currentUser && await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
+        const querySnapshot =  await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
         //const querySnapshot = await getDocs(query(collection(db, 'expense 2', where('username','==',currentUser))));
         let dataa = querySnapshot?.docs?.map((doc) => doc.data());
 
@@ -103,7 +103,7 @@ export default function Home() {
   // Calculate and update totals based on filters
   const updateTotals = () => {
     const filteredExpenses = recentEntries.filter((entry) => {
-      const entryDate = new Date(entry.date);
+      const entryDate = new Date(entry.date??"");
       const selectedYearInt = parseInt(selectedYear, 10);
 
       if (selectedDate && entry.date !== selectedDate) {
@@ -163,11 +163,6 @@ export default function Home() {
   // CSS class for red text when totalBalance is not positive
   const totalBalanceClass = totalBalance < 0 ? "text-red-500" : "text-green-500";
 
-
-// Function to add a new expense to recentEntries
-const addExpense = (newExpense) => {
-  setRecentEntries([newExpense, ...recentEntries]);
-};
 
 
 
@@ -283,7 +278,7 @@ const addExpense = (newExpense) => {
               <ul className="space-y-2">
                 {recentEntries
                   .filter((entry) => {
-                    const entryDate = new Date(entry.date);
+                    const entryDate = new Date(entry.date??"");
                     const selectedYearInt = parseInt(selectedYear, 10);
 
                     // if (selectedDate && entry.date !== selectedDate) {

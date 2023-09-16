@@ -21,7 +21,7 @@ export default function ExpenseForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [expenseData, setExpenseData] = useState({
-    amount: "",
+    amount: 0,
     description: "",
     date: new Date().toISOString().split("T")[0],
   });
@@ -31,7 +31,7 @@ export default function ExpenseForm() {
     //setSelectedDate(date);
  // };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
    
@@ -47,7 +47,7 @@ export default function ExpenseForm() {
       const newExpense = {
         username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description, // Use description as the name
-        amount: parseFloat(expenseData.amount),
+        amount: expenseData.amount,
         type:"Expense",
        // date: selectedDate.toISOString().split("T")[0],
       };
@@ -64,13 +64,13 @@ export default function ExpenseForm() {
   
       // Optionally, you can reset the form or perform other actions
       setExpenseData({
-        amount: "",
+        amount: 0,
         description: "",
         date: new Date().toISOString().split("T")[0],
       });
       onClose();
     } catch (error) {
-      console.error("Error adding expense:", error.message);
+      console.error("Error adding expense:");
     }
   };
 
@@ -89,9 +89,9 @@ export default function ExpenseForm() {
                     type="number"
                     name="amount"
                     placeholder="Enter Expense Amount"
-                    value={expenseData.amount}
+                    value={(expenseData.amount).toString()}
                     onChange={(e) =>
-                      setExpenseData({ ...expenseData, amount: e.target.value })
+                      setExpenseData({ ...expenseData, amount: parseFloat(e.target.value) })
                     }
                     required
                   />
@@ -114,16 +114,16 @@ export default function ExpenseForm() {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Expense Date:
                   </label>
-                  <DatePicker
+                  {/* <DatePicker
                     selected={selectedDate}
                     onChange={handleDateChange}
                     className="w-full p-2 rounded-lg border text-black border-gray-400 bg-gray-200"
                     dateFormat="MM/dd/yyyy"
-                  />
+                  /> */}
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button variant="text" color="warning" onClick={onClose}>
+                <Button color="warning" onClick={onClose}>
                   Cancel
                 </Button>
                 <Button type="submit" color="primary">
