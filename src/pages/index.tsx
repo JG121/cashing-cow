@@ -43,7 +43,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
          console.log("currentUser",currentUser)
-        const querySnapshot =  await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
+        const querySnapshot = await getDocs(query(collection(db, 'expense 2'), where('username', '==', currentUser)));
         //const querySnapshot = await getDocs(query(collection(db, 'expense 2', where('username','==',currentUser))));
         let dataa = querySnapshot?.docs?.map((doc) => doc.data());
 
@@ -68,7 +68,7 @@ export default function Home() {
 
     fetchData();
 
-  },[])
+  },[currentUser,setTotalExpenses,totalExpenses])
 
 
   // User data
