@@ -1,3 +1,4 @@
+// ExpenseForm.tsx
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import {
@@ -11,15 +12,12 @@ import {
   Input,
 } from "@nextui-org/react";
 import "react-datepicker/dist/react-datepicker.css";
-
-// Import Firestore from Firebase
-import { getFirestore, collection, addDoc, getDocs, query } from "firebase/firestore";
-import { db } from "@/components/firebase/index"; // Import your Firebase configuration
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/components/firebase/index";
 import { useUser } from "@clerk/nextjs";
 
 export default function ExpenseForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [expenseData, setExpenseData] = useState({
     amount: 0,
     description: "",
@@ -27,42 +25,24 @@ export default function ExpenseForm() {
   });
   const currentUser = useUser();
 
-  //const handleDateChange = (date) => {
-    //setSelectedDate(date);
- // };
-
-  const handleFormSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-   
- 
-
     try {
-      // Validate the form data
       if (!expenseData.amount || isNaN(expenseData.amount)) {
         throw new Error("Amount must be a valid number.");
       }
-  
-      // Create a new expense object
+
       const newExpense = {
         username: currentUser.user?.emailAddresses[0].emailAddress,
-        name: expenseData.description, // Use description as the name
+        name: expenseData.description,
         amount: expenseData.amount,
-        type:"Expense",
-       // date: selectedDate.toISOString().split("T")[0],
+        type: "Expense",
+        date: new Date(expenseData.date).toISOString(),
       };
-  
-      // Add the expense to Firestore
-      //const docRef = await addDoc(collection(db, "expenses"), newExpense);
-      const docReff = await addDoc(collection(db, "expense 2"), newExpense);
-      // console.log("Expense added with ID: ", docRef.id);
 
-      // dataaaa.forEach((doc)=>
-      //   console.log("data",doc.data())
-      // )
-      // console.log("Datatatatatat",dataaaa);
-  
-      // Optionally, you can reset the form or perform other actions
+      const docRef = await addDoc(collection(db, "expense 2"), newExpense);
+
       setExpenseData({
         amount: 0,
         description: "",
@@ -70,7 +50,7 @@ export default function ExpenseForm() {
       });
       onClose();
     } catch (error) {
-      console.error("Error adding expense:");
+      console.error("Error adding expense:", error);
     }
   };
 
@@ -89,9 +69,12 @@ export default function ExpenseForm() {
                     type="number"
                     name="amount"
                     placeholder="Enter Expense Amount"
-                    value={(expenseData.amount).toString()}
+                    value={expenseData.amount.toString()}
                     onChange={(e) =>
-                      setExpenseData({ ...expenseData, amount: parseFloat(e.target.value) })
+                      setExpenseData({
+                        ...expenseData,
+                        amount: parseFloat(e.target.value),
+                      })
                     }
                     required
                   />
@@ -114,12 +97,17 @@ export default function ExpenseForm() {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Expense Date:
                   </label>
-                  {/* <DatePicker
-                    selected={selectedDate}
-                    onChange={handleDateChange}
+                  <DatePicker
+                    selected={new Date(expenseData.date)}
+                    onChange={(date) =>
+                      setExpenseData({
+                        ...expenseData,
+                        date: date.toISOString(),
+                      })
+                    }
                     className="w-full p-2 rounded-lg border text-black border-gray-400 bg-gray-200"
                     dateFormat="MM/dd/yyyy"
-                  /> */}
+                  />
                 </div>
               </ModalBody>
               <ModalFooter>
