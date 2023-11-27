@@ -38,7 +38,7 @@ export default function ExpenseForm() {
         name: expenseData.description,
         amount: expenseData.amount,
         type: "Expense",
-        date: new Date(expenseData.date).toISOString(),
+        date: expenseData.date ? new Date(expenseData.date).toISOString() : null,
       };
 
       const docRef = await addDoc(collection(db, "expense 2"), newExpense);
@@ -98,11 +98,11 @@ export default function ExpenseForm() {
                     Expense Date:
                   </label>
                   <DatePicker
-                    selected={new Date(expenseData.date)}
+                    selected={expenseData.date ? new Date(expenseData.date) : null}
                     onChange={(date) =>
                       setExpenseData({
                         ...expenseData,
-                        date: date.toISOString(),
+                        date: date ? date.toISOString() : "",
                       })
                     }
                     className="w-full p-2 rounded-lg border text-black border-gray-400 bg-gray-200"

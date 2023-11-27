@@ -273,47 +273,47 @@ export default function Home() {
 
           {/* Recent Entries Section */}
           <section className="container mx-auto mt-8">
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4 text-white">Recent Entries</h2>
-              <ul className="space-y-2">
-                {recentEntries
-                  .filter((entry) => {
-                    const entryDate = entry.date ? new Date(entry.date) : null; // Convert to Date if available
-                    const selectedYearInt = parseInt(selectedYear, 10);
-                    const selectedMonthStr = selectedMonth.padStart(2, "0");
+  <div className="bg-gray-800 p-6 rounded-lg">
+    <h2 className="text-2xl font-semibold mb-4 text-white">Recent Entries</h2>
+    <ul className="space-y-2">
+      {recentEntries
+        .filter((entry) => {
+          const entryDate = entry.date ? new Date(entry.date) : null;
+          const selectedYearInt = parseInt(selectedYear, 10);
+          const selectedMonthStr = selectedMonth?.padStart(2, "0");
 
-                    if (selectedType !== "all" && entry.type !== selectedType) {
-                      return false;
-                    }
-                    if (selectedDate && entryDate?.toISOString().split("T")[0] !== selectedDate) {
-                      return false;
-                    }
-                    if (selectedYear && entryDate?.getFullYear() !== selectedYearInt) {
-                      return false;
-                    }
-                    if (
-                      selectedMonth &&
-                      entryDate?.getMonth() + 1 !== parseInt(selectedMonthStr, 10)
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  })
-                  .map((entry, index) => {
-                    const entryDate = entry.date ? new Date(entry.date) : null; // Move this line inside the map function
-                    return (
-                      <li key={index} className="flex justify-between">
-                        <span>{entry.name}</span>
-                        <span>
-                          ${entry.amount.toLocaleString()} ({entry.type}) -{" "}
-                          {entryDate ? entryDate.toLocaleDateString() : "No Date"}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
-          </section>
+          if (selectedType !== "all" && entry.type !== selectedType) {
+            return false;
+          }
+          if (selectedDate && entryDate?.toISOString().split("T")[0] !== selectedDate) {
+            return false;
+          }
+          if (selectedYear && entryDate?.getFullYear() !== selectedYearInt) {
+            return false;
+          }
+          if (
+            selectedMonth &&
+            entryDate?.getMonth() !== undefined && // Check if entryDate is defined
+            entryDate?.getMonth() + 1 !== parseInt(selectedMonthStr, 10)
+          ) {
+            return false;
+          }
+          return true;
+        })
+        .map((entry, index) => {
+          const entryDate = entry.date ? new Date(entry.date) : null; // Move this line inside the map function
+          return (
+            <li key={index} className="flex justify-between">
+              <span>{entry.name}</span>
+              <span>
+                ${entry.amount.toLocaleString()} ({entry.type}) - {entryDate ? entryDate.toLocaleDateString() : 'No Date'}
+              </span>
+            </li>
+          );
+        })}
+    </ul>
+  </div>
+</section>
         </main>
       </div>
     </div>
