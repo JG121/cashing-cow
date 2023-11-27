@@ -25,7 +25,7 @@ export default function ExpenseForm() {
   });
   const currentUser = useUser();
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
