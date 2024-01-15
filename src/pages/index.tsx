@@ -10,7 +10,6 @@ import { db } from "@/components/firebase";
 import { ExpenseChart } from "@/components/ExpenseChart";
 import { Expense } from "@/components/types";
 
-
 export default function Home() {
   const expenseData: Expense[] = [];
   // State variables
@@ -71,15 +70,6 @@ export default function Home() {
   // User data
   const user = useUser();
 
-  // Toggle navigation sidebar
-  const toggleNav = () => {
-    setIsNavOpen(!isNavOpen);
-  };
-
-  // Toggle chart type
-  const toggleChartType = () => {
-    setChartType(chartType === "bar" ? "line" : "bar");
-  };
 
   // Calculate and update totals based on filters
   const updateTotals = () => {
@@ -126,32 +116,6 @@ export default function Home() {
     updateTotals();
   }, [selectedDate, selectedYear, selectedMonth, selectedType]);
 
-  // Chart data and options
-  const chartData = {
-    labels: ["Expense", "Income"],
-    datasets: [
-      {
-        label: "Total",
-        data: [totalExpenses, totalIncome],
-        backgroundColor: ["rgba(255, 99, 132, 0.6)", "rgba(75, 192, 192, 0.6)"],
-        borderColor: ["rgba(255, 99, 132, 1)", "rgba(75, 192, 192, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-
-  // CSS class for red text when totalBalance is not positive
-  const totalBalanceClass =
-    totalBalance < 0 ? "text-red-500" : "text-green-500";
-
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       {/* Navigation */}
@@ -172,21 +136,21 @@ export default function Home() {
           <section className="container mx-auto py-8 px-4">
             {/* Financial Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div
-                className={`bg-gray-800 p-6 shadow-lg rounded-lg ${totalBalanceClass}`}
-              >
+              <div className="relative bg-gray-800 p-6 shadow-lg rounded-lg">
                 <div className="text-gray-400 text-lg">Total Balance</div>
                 <div className="text-3xl font-semibold">
                   ${totalBalance.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-gray-800 p-6 shadow-lg rounded-lg">
+              <div className="relative bg-gray-800 p-6 shadow-lg rounded-lg">
+                <ExpenseModal />
                 <div className="text-gray-400 text-lg">Total Expenses</div>
                 <div className="text-3xl font-semibold text-red-500">
                   ${totalExpenses.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-gray-800 p-6 shadow-lg rounded-lg">
+              <div className="relative bg-gray-800 p-6 shadow-lg rounded-lg">
+                <IncomeModal />
                 <div className="text-gray-400 text-lg">Total Income</div>
                 <div className="text-3xl font-semibold text-green-500">
                   ${totalIncome.toLocaleString()}
@@ -194,11 +158,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Buttons */}
-            <div className="px-4 md:px-12 space-y-8 md:space-y-0 md:space-x-4 flex flex-col sm:flex-row sm:space-x-4">
-              <ExpenseModal />
-              <IncomeModal />
-            </div>
             <ExpenseChart data={recentEntries} />
           </section>
 

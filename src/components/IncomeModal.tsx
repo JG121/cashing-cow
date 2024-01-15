@@ -15,7 +15,6 @@ import {
 import { incomeCategories } from "../components/income";
 import "react-datepicker/dist/react-datepicker.css"; // Import date picker styles
 
-
 export default function IncomeModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // State for the selected date
@@ -26,14 +25,20 @@ export default function IncomeModal() {
 
   return (
     <>
-      <Button onPress={onOpen} color="success">
-        + Income
+      <Button
+        className="absolute top-0 right-0 m-2 text-green-500 font-bold py-2 px-4  bg-gray-800"
+        onPress={onOpen}
+        color="success"
+      >
+        +
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Add Income</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Add Income
+              </ModalHeader>
               <ModalBody>
                 <Input
                   type="number"
@@ -41,7 +46,9 @@ export default function IncomeModal() {
                   isRequired
                   placeholder="0.00"
                   labelPlacement="outside"
-                  startContent={<div className="pointer-events-none flex items-center"></div>}
+                  startContent={
+                    <div className="pointer-events-none flex items-center"></div>
+                  }
                 />
 
                 <Select label="Select an Income" className="max-w-xs">

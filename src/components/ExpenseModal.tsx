@@ -15,7 +15,6 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/components/firebase/index";
 import { useUser } from "@clerk/nextjs";
 import { ExpenseCategories } from "./types";
-import { randomUUID } from "crypto";
 
 export default function ExpenseForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,7 +60,12 @@ export default function ExpenseForm() {
 
   return (
     <>
-      <Button onClick={onOpen}>Add Expense</Button>
+      <Button
+        className="absolute top-0 right-0 m-2 text-red-500 font-bold py-2 px-4  bg-gray-800"
+        onClick={onOpen}
+      >
+        +
+      </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onClose}>
         <ModalContent style={{ height: "80%" }}>
@@ -121,7 +125,7 @@ export default function ExpenseForm() {
                 <Button color="warning" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="submit" color="primary">
+                <Button onClick={onClose} type="submit" color="primary">
                   Add
                 </Button>
               </ModalFooter>
