@@ -1,4 +1,3 @@
-// ExpenseForm.tsx
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import {
@@ -15,6 +14,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/components/firebase/index";
 import { useUser } from "@clerk/nextjs";
+import { ExpenseCategories } from "./types";
+import { randomUUID } from "crypto";
 
 export default function ExpenseForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,14 +35,18 @@ export default function ExpenseForm() {
       }
 
       const newExpense = {
+        id: randomUUID(),
         username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description,
         amount: expenseData.amount,
+        category: ExpenseCategories["Commision Payments"], // change this to get the value from the user.
         type: "Expense",
-        date: expenseData.date ? new Date(expenseData.date).toISOString() : null,
+        date: expenseData.date
+          ? new Date(expenseData.date).toISOString()
+          : null,
       };
 
-      const docRef = await addDoc(collection(db, "expense 2"), newExpense);
+      const docRef = await addDoc(collection(db, "expense pro"), newExpense);
 
       setExpenseData({
         amount: 0,
@@ -98,7 +103,9 @@ export default function ExpenseForm() {
                     Expense Date:
                   </label>
                   <DatePicker
-                    selected={expenseData.date ? new Date(expenseData.date) : null}
+                    selected={
+                      expenseData.date ? new Date(expenseData.date) : null
+                    }
                     onChange={(date) =>
                       setExpenseData({
                         ...expenseData,
