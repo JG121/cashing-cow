@@ -61,7 +61,7 @@ export default function ExpenseForm() {
   return (
     <>
       <Button
-        className="absolute top-0 right-0 m-2 text-red-500 font-bold py-2 px-4  bg-gray-800"
+        className="absolute top-0 right-0 m-2 text-red-500 font-bold  text-2xl py-2 px-4  bg-gray-800"
         onClick={onOpen}
       >
         +

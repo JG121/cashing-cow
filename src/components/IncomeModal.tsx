@@ -26,7 +26,7 @@ export default function IncomeModal() {
   return (
     <>
       <Button
-        className="absolute top-0 right-0 m-2 text-green-500 font-bold py-2 px-4  bg-gray-800"
+        className="absolute top-0 right-0 m-2 text-green-500  text-2xl font-bold py-2 px-4  bg-gray-800"
         onPress={onOpen}
         color="success"
       >
