@@ -26,6 +26,7 @@ import { columns, typeOptions } from "./data";
 import { capitalize } from "./utils";
 import { VerticalDotsIcon } from "./VerticalDotsIcon";
 import { Expense } from "../../components/types";
+import { DateRangePicker, DateRangePickerItem, DateRangePickerValue } from "@tremor/react";
 
 const typeColorMap: Record<string, ChipProps["color"]> = {
   income: "success",
@@ -64,7 +65,6 @@ interface DashboardTableProps {
 export const DashboardTable: React.FC<DashboardTableProps> = ({
   data: expenses,
 }) => {
-  console.log("expenses", expenses);
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
@@ -81,6 +81,7 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
+  const [dateRangevalue, setDateRangevalue] = React.useState<DateRangePickerValue>();
 
   const pages = Math.ceil(expenses.length / rowsPerPage);
 
@@ -111,8 +112,21 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
       );
     }
 
+    if (
+      dateRangevalue && dateRangevalue.from && dateRangevalue.to 
+    ) {
+      const fromDate = new Date(dateRangevalue.from);
+      const toDate = new Date(dateRangevalue.to);
+
+      filteredExpenses = filteredExpenses.filter(expense => {
+        const expenseDate = new Date(expense.date);
+        return expenseDate >= fromDate &&
+               expenseDate <= toDate 
+      });
+    }
+
     return filteredExpenses;
-  }, [expenses, filterValue, typeFilter]);
+  }, [expenses, filterValue, typeFilter,dateRangevalue]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -241,6 +255,13 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
+          <DateRangePicker
+            className="max-w-sm mx-auto"
+            enableSelect={false}
+            placeholder="Filter by Date"
+            value={dateRangevalue} 
+            onValueChange={(value)=>setDateRangevalue(value)}
+           />
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button
