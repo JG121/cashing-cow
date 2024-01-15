@@ -9,17 +9,10 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { ExpenseChart } from "@/components/ExpenseChart";
 import { Expense } from "@/components/types";
+import { DashboardTable } from "@/components/dashboardTable/DashboardTable";
 
 export default function Home() {
   const expenseData: Expense[] = [];
-  // State variables
-  const [activeTab, setActiveTab] = useState("expense");
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [chartType, setChartType] = useState("bar");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedType, setSelectedType] = useState("all");
   const [recentEntries, setRecentEntries] = useState(expenseData);
   const currentUser = useUser().user?.emailAddresses[0].emailAddress;
 
@@ -70,33 +63,9 @@ export default function Home() {
   // User data
   const user = useUser();
 
-
   // Calculate and update totals based on filters
   const updateTotals = () => {
-    const filteredExpenses = recentEntries.filter((entry) => {
-      const entryDate = new Date(entry.date ?? "");
-      const selectedYearInt = parseInt(selectedYear, 10);
-      const selectedMonthStr = selectedMonth.padStart(2, "0");
-
-      if (selectedDate && entry.date !== selectedDate) {
-        return false;
-      }
-      if (selectedYear && entryDate.getFullYear() !== selectedYearInt) {
-        return false;
-      }
-      if (
-        selectedMonth &&
-        entryDate.getMonth() + 1 !== parseInt(selectedMonthStr, 10)
-      ) {
-        return false;
-      }
-      if (selectedType !== "all" && entry.type !== selectedType) {
-        return false;
-      }
-      return true;
-    });
-
-    const totalExpensesValue = filteredExpenses
+    const totalExpensesValue = recentEntries
       .filter((entry) => entry.type === "expense")
       .reduce((total, entry) => total + entry.amount, 0);
 
@@ -114,7 +83,7 @@ export default function Home() {
   // Use useEffect to recalculate totals whenever filters change
   useEffect(() => {
     updateTotals();
-  }, [selectedDate, selectedYear, selectedMonth, selectedType]);
+  }, []);
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -159,127 +128,8 @@ export default function Home() {
             </div>
 
             <ExpenseChart data={recentEntries} />
-          </section>
-
-          {/* Filter Section */}
-          <section className="container mx-auto mt-8">
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4 text-white">
-                Filter Entries
-              </h2>
-              <div className="space-y-4">
-                {/* Date Picker */}
-                <div className="space-y-2">
-                  <label className="text-white text-lg">Filter by Date:</label>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="text-black rounded-md p-2"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-white text-lg">Filter by Year:</label>
-                  <input
-                    type="number"
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    className="text-black rounded-md p-2"
-                  />
-                </div>
-                {/* Month Filter */}
-                <div className="space-y-2">
-                  <label className="text-white text-lg">Filter by Month:</label>
-                  <select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="text-black rounded-md p-2"
-                  >
-                    <option value="">All</option>
-                    <option value="01">January</option>
-                    <option value="02">February</option>
-                    <option value="03">March</option>
-                    <option value="04">April</option>
-                    <option value="05">May</option>
-                    <option value="06">June</option>
-                    <option value="07">July</option>
-                    <option value="08">August</option>
-                    <option value="09">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                  </select>
-                </div>
-                {/* Type Filter */}
-                <div className="space-y-2">
-                  <label className="text-white text-lg">Filter by Type:</label>
-                  <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
-                    className="text-black rounded-md p-2"
-                  >
-                    <option value="all">All</option>
-                    <option value="expense">Expense</option>
-                    <option value="income">Income</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Recent Entries Section */}
-          <section className="container mx-auto mt-8">
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4 text-white">
-                Recent Entries
-              </h2>
-              <ul className="space-y-2">
-                {recentEntries
-                  .filter((entry) => {
-                    const entryDate = entry.date ? new Date(entry.date) : null;
-                    const selectedYearInt = parseInt(selectedYear, 10);
-                    const selectedMonthStr = selectedMonth?.padStart(2, "0");
-
-                    if (selectedType !== "all" && entry.type !== selectedType) {
-                      return false;
-                    }
-                    if (
-                      selectedDate &&
-                      entryDate?.toISOString().split("T")[0] !== selectedDate
-                    ) {
-                      return false;
-                    }
-                    if (
-                      selectedYear &&
-                      entryDate?.getFullYear() !== selectedYearInt
-                    ) {
-                      return false;
-                    }
-                    if (
-                      selectedMonth &&
-                      entryDate?.getMonth() !== undefined && // Check if entryDate is defined
-                      entryDate?.getMonth() + 1 !==
-                        parseInt(selectedMonthStr, 10)
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  })
-                  .map((entry, index) => {
-                    const entryDate = entry.date ? new Date(entry.date) : null; // Move this line inside the map function
-                    return (
-                      <li key={index} className="flex justify-between">
-                        <span>{entry.name}</span>
-                        <span>
-                          ${entry.amount.toLocaleString()} ({entry.type}) -{" "}
-                          {entryDate
-                            ? entryDate.toLocaleDateString()
-                            : "No Date"}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
+            <div className="bg-gray-800 p-6 shadow-lg rounded-lg mt-8">
+              <DashboardTable data={recentEntries} />
             </div>
           </section>
         </main>

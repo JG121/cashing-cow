@@ -1,4 +1,4 @@
-export const dummyData = [
+export const expenses = [
   {
     id: 1,
     name: "Item 1",
@@ -6,7 +6,7 @@ export const dummyData = [
     description: "Desc 1",
     date: "2023-01-15T00:00:00.000Z",
     category: "Category 1",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const dummyData = [
     description: "Desc 2",
     date: "2023-02-10T00:00:00.000Z",
     category: "Category 2",
-    type: "Income",
+    type: "income",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const dummyData = [
     description: "Desc 3",
     date: "2023-02-20T00:00:00.000Z",
     category: "Category 3",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const dummyData = [
     description: "Desc 4",
     date: "2023-03-05T00:00:00.000Z",
     category: "Category 4",
-    type: "Income",
+    type: "income",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ export const dummyData = [
     description: "Desc 5",
     date: "2023-03-15T00:00:00.000Z",
     category: "Category 5",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ export const dummyData = [
     description: "Desc 6",
     date: "2023-04-22T00:00:00.000Z",
     category: "Category 6",
-    type: "Income",
+    type: "income",
   },
   {
     id: 7,
@@ -60,7 +60,7 @@ export const dummyData = [
     description: "Desc 7",
     date: "2023-04-25T00:00:00.000Z",
     category: "Category 7",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 8,
@@ -69,7 +69,7 @@ export const dummyData = [
     description: "Desc 8",
     date: "2023-05-10T00:00:00.000Z",
     category: "Category 8",
-    type: "Income",
+    type: "income",
   },
   {
     id: 9,
@@ -78,7 +78,7 @@ export const dummyData = [
     description: "Desc 9",
     date: "2023-05-18T00:00:00.000Z",
     category: "Category 9",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 10,
@@ -87,7 +87,7 @@ export const dummyData = [
     description: "Desc 10",
     date: "2023-06-07T00:00:00.000Z",
     category: "Category 10",
-    type: "Income",
+    type: "income",
   },
   {
     id: 11,
@@ -96,7 +96,7 @@ export const dummyData = [
     description: "Desc 11",
     date: "2023-07-12T00:00:00.000Z",
     category: "Category 11",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 12,
@@ -105,7 +105,7 @@ export const dummyData = [
     description: "Desc 12",
     date: "2023-07-27T00:00:00.000Z",
     category: "Category 12",
-    type: "Income",
+    type: "income",
   },
   {
     id: 13,
@@ -114,7 +114,7 @@ export const dummyData = [
     description: "Desc 13",
     date: "2023-08-15T00:00:00.000Z",
     category: "Category 13",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 14,
@@ -123,7 +123,7 @@ export const dummyData = [
     description: "Desc 14",
     date: "2023-09-05T00:00:00.000Z",
     category: "Category 14",
-    type: "Income",
+    type: "income",
   },
   {
     id: 15,
@@ -132,7 +132,7 @@ export const dummyData = [
     description: "Desc 15",
     date: "2023-09-22T00:00:00.000Z",
     category: "Category 15",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 16,
@@ -141,7 +141,7 @@ export const dummyData = [
     description: "Desc 16",
     date: "2023-10-03T00:00:00.000Z",
     category: "Category 16",
-    type: "Income",
+    type: "income",
   },
   {
     id: 17,
@@ -150,7 +150,7 @@ export const dummyData = [
     description: "Desc 17",
     date: "2023-10-21T00:00:00.000Z",
     category: "Category 17",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 18,
@@ -159,7 +159,7 @@ export const dummyData = [
     description: "Desc 18",
     date: "2023-11-09T00:00:00.000Z",
     category: "Category 18",
-    type: "Income",
+    type: "income",
   },
   {
     id: 19,
@@ -168,7 +168,7 @@ export const dummyData = [
     description: "Desc 19",
     date: "2023-11-19T00:00:00.000Z",
     category: "Category 19",
-    type: "Expense",
+    type: "expense",
   },
   {
     id: 20,
@@ -177,6 +177,6 @@ export const dummyData = [
     description: "Desc 20",
     date: "2023-12-30T00:00:00.000Z",
     category: "Category 20",
-    type: "Income",
+    type: "income",
   },
 ];

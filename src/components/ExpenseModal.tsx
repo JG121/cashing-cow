@@ -38,7 +38,7 @@ export default function ExpenseForm() {
         username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description,
         amount: expenseData.amount,
-        category: ExpenseCategories["Commision Payments"], // change this to get the value from the user.
+        category: ExpenseCategories.CommisionPayments, // change this to get the value from the user.
         type: "Expense",
         date: expenseData.date
           ? new Date(expenseData.date).toISOString()
