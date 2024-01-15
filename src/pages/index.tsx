@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Avatar } from "@nextui-org/react";
-import { Button } from "@nextui-org/react";
 import "chart.js/auto";
-import { Bar, Line } from "react-chartjs-2";
 import NavBar from "../components/navbar";
 import ExpenseModal from "@/components/ExpenseModal";
 import IncomeModal from "@/components/IncomeModal";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/components/firebase";
+import { ExpenseChart } from "@/components/ExpenseChart";
+import { Expense } from "@/components/types";
 
-interface ExpenseType {
-  name: string;
-  amount: number;
-  date?: string;
-  type: string;
-}
 
 export default function Home() {
-  const expenseData: ExpenseType[] = [];
+  const expenseData: Expense[] = [];
   // State variables
   const [activeTab, setActiveTab] = useState("expense");
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -40,27 +34,32 @@ export default function Home() {
       try {
         console.log("currentUser", currentUser);
         const querySnapshot = await getDocs(
-          query(collection(db, "expense 2"), where("username", "==", currentUser))
+          query(
+            collection(db, "expense pro"),
+            where("username", "==", currentUser)
+          )
         );
         let dataa = querySnapshot?.docs?.map((doc) => {
           const data = doc.data();
           // Ensure the date is in the correct format
-          const formattedDate = data.date ? new Date(data.date).toISOString().split("T")[0] : null;
+          const formattedDate = new Date(data.date).toISOString().split("T")[0];
 
           return {
             name: data.name,
             amount: data.amount,
             type: data.type,
             date: formattedDate,
+            category: data.category,
+            id: data.id,
+            description: data.description,
           };
         });
-
         const totalSum = dataa.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.amount;
         }, 0);
 
         setTotalExpenses(totalSum);
-        setRecentEntries(dataa as ExpenseType[]);
+        setRecentEntries(dataa);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -95,7 +94,10 @@ export default function Home() {
       if (selectedYear && entryDate.getFullYear() !== selectedYearInt) {
         return false;
       }
-      if (selectedMonth && entryDate.getMonth() + 1 !== parseInt(selectedMonthStr, 10)) {
+      if (
+        selectedMonth &&
+        entryDate.getMonth() + 1 !== parseInt(selectedMonthStr, 10)
+      ) {
         return false;
       }
       if (selectedType !== "all" && entry.type !== selectedType) {
@@ -147,7 +149,8 @@ export default function Home() {
   };
 
   // CSS class for red text when totalBalance is not positive
-  const totalBalanceClass = totalBalance < 0 ? "text-red-500" : "text-green-500";
+  const totalBalanceClass =
+    totalBalance < 0 ? "text-red-500" : "text-green-500";
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -169,17 +172,25 @@ export default function Home() {
           <section className="container mx-auto py-8 px-4">
             {/* Financial Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className={`bg-gray-800 p-6 shadow-lg rounded-lg ${totalBalanceClass}`}>
+              <div
+                className={`bg-gray-800 p-6 shadow-lg rounded-lg ${totalBalanceClass}`}
+              >
                 <div className="text-gray-400 text-lg">Total Balance</div>
-                <div className="text-3xl font-semibold">${totalBalance.toLocaleString()}</div>
+                <div className="text-3xl font-semibold">
+                  ${totalBalance.toLocaleString()}
+                </div>
               </div>
               <div className="bg-gray-800 p-6 shadow-lg rounded-lg">
                 <div className="text-gray-400 text-lg">Total Expenses</div>
-                <div className="text-3xl font-semibold text-red-500">${totalExpenses.toLocaleString()}</div>
+                <div className="text-3xl font-semibold text-red-500">
+                  ${totalExpenses.toLocaleString()}
+                </div>
               </div>
               <div className="bg-gray-800 p-6 shadow-lg rounded-lg">
                 <div className="text-gray-400 text-lg">Total Income</div>
-                <div className="text-3xl font-semibold text-green-500">${totalIncome.toLocaleString()}</div>
+                <div className="text-3xl font-semibold text-green-500">
+                  ${totalIncome.toLocaleString()}
+                </div>
               </div>
             </div>
 
@@ -187,30 +198,16 @@ export default function Home() {
             <div className="px-4 md:px-12 space-y-8 md:space-y-0 md:space-x-4 flex flex-col sm:flex-row sm:space-x-4">
               <ExpenseModal />
               <IncomeModal />
-              <Button onClick={toggleChartType} color="secondary">
-                Toggle Chart
-              </Button>
             </div>
-
-            {/* Chart Section */}
-            <div className="bg-gray-800 p-6 shadow-lg rounded-lg mt-8">
-              <h2 className="text-2xl font-semibold mb-4">
-                {chartType === "bar" ? "Expense Bar Chart" : "Expense Line Chart"}{" "}
-              </h2>
-              <div>
-                {chartType === "bar" ? (
-                  <Bar data={chartData} options={chartOptions} />
-                ) : (
-                  <Line data={chartData} options={chartOptions} />
-                )}
-              </div>
-            </div>
+            <ExpenseChart data={recentEntries} />
           </section>
 
           {/* Filter Section */}
           <section className="container mx-auto mt-8">
             <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4 text-white">Filter Entries</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-white">
+                Filter Entries
+              </h2>
               <div className="space-y-4">
                 {/* Date Picker */}
                 <div className="space-y-2">
@@ -273,47 +270,59 @@ export default function Home() {
 
           {/* Recent Entries Section */}
           <section className="container mx-auto mt-8">
-  <div className="bg-gray-800 p-6 rounded-lg">
-    <h2 className="text-2xl font-semibold mb-4 text-white">Recent Entries</h2>
-    <ul className="space-y-2">
-      {recentEntries
-        .filter((entry) => {
-          const entryDate = entry.date ? new Date(entry.date) : null;
-          const selectedYearInt = parseInt(selectedYear, 10);
-          const selectedMonthStr = selectedMonth?.padStart(2, "0");
+            <div className="bg-gray-800 p-6 rounded-lg">
+              <h2 className="text-2xl font-semibold mb-4 text-white">
+                Recent Entries
+              </h2>
+              <ul className="space-y-2">
+                {recentEntries
+                  .filter((entry) => {
+                    const entryDate = entry.date ? new Date(entry.date) : null;
+                    const selectedYearInt = parseInt(selectedYear, 10);
+                    const selectedMonthStr = selectedMonth?.padStart(2, "0");
 
-          if (selectedType !== "all" && entry.type !== selectedType) {
-            return false;
-          }
-          if (selectedDate && entryDate?.toISOString().split("T")[0] !== selectedDate) {
-            return false;
-          }
-          if (selectedYear && entryDate?.getFullYear() !== selectedYearInt) {
-            return false;
-          }
-          if (
-            selectedMonth &&
-            entryDate?.getMonth() !== undefined && // Check if entryDate is defined
-            entryDate?.getMonth() + 1 !== parseInt(selectedMonthStr, 10)
-          ) {
-            return false;
-          }
-          return true;
-        })
-        .map((entry, index) => {
-          const entryDate = entry.date ? new Date(entry.date) : null; // Move this line inside the map function
-          return (
-            <li key={index} className="flex justify-between">
-              <span>{entry.name}</span>
-              <span>
-                ${entry.amount.toLocaleString()} ({entry.type}) - {entryDate ? entryDate.toLocaleDateString() : 'No Date'}
-              </span>
-            </li>
-          );
-        })}
-    </ul>
-  </div>
-</section>
+                    if (selectedType !== "all" && entry.type !== selectedType) {
+                      return false;
+                    }
+                    if (
+                      selectedDate &&
+                      entryDate?.toISOString().split("T")[0] !== selectedDate
+                    ) {
+                      return false;
+                    }
+                    if (
+                      selectedYear &&
+                      entryDate?.getFullYear() !== selectedYearInt
+                    ) {
+                      return false;
+                    }
+                    if (
+                      selectedMonth &&
+                      entryDate?.getMonth() !== undefined && // Check if entryDate is defined
+                      entryDate?.getMonth() + 1 !==
+                        parseInt(selectedMonthStr, 10)
+                    ) {
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map((entry, index) => {
+                    const entryDate = entry.date ? new Date(entry.date) : null; // Move this line inside the map function
+                    return (
+                      <li key={index} className="flex justify-between">
+                        <span>{entry.name}</span>
+                        <span>
+                          ${entry.amount.toLocaleString()} ({entry.type}) -{" "}
+                          {entryDate
+                            ? entryDate.toLocaleDateString()
+                            : "No Date"}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          </section>
         </main>
       </div>
     </div>
