@@ -32,7 +32,7 @@ const typeColorMap: Record<string, ChipProps["color"]> = {
   expense: "danger",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "type", "category"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "type", "category", "date"];
 
 function formatDateString(dateString: string) {
   const months = [

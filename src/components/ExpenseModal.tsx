@@ -9,6 +9,8 @@ import {
   Button,
   useDisclosure,
   Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { addDoc, collection } from "firebase/firestore";
@@ -22,6 +24,7 @@ export default function ExpenseForm() {
     amount: 0,
     description: "",
     date: new Date().toISOString().split("T")[0],
+    category: "",
   });
   const currentUser = useUser();
 
@@ -38,7 +41,7 @@ export default function ExpenseForm() {
         username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description,
         amount: expenseData.amount,
-        category: ExpenseCategories.CommisionPayments, // change this to get the value from the user.
+        category: expenseData.category,
         type: "Expense",
         date: expenseData.date
           ? new Date(expenseData.date).toISOString()
@@ -51,11 +54,25 @@ export default function ExpenseForm() {
         amount: 0,
         description: "",
         date: new Date().toISOString().split("T")[0],
+        category:"",
       });
       onClose();
     } catch (error) {
       console.error("Error adding expense:", error);
     }
+  };
+
+  const expenseCategoriesArray = Object.entries(ExpenseCategories).map(([key, value]) => ({
+    value: key,
+    label: value
+  }));
+
+  const handleChange = (e:any) => {
+    console.log("valueeeee",e)
+    setExpenseData({
+      ...expenseData,
+      category: ExpenseCategories[e.target.value as keyof typeof ExpenseCategories],
+    });
   };
 
   return (
@@ -85,11 +102,22 @@ export default function ExpenseForm() {
                         amount: parseFloat(e.target.value),
                       })
                     }
-                    required
+                    isRequired
                   />
                 </div>
+
+                <Select isRequired label="Select an Expense" className="max-w-xs" onChange={handleChange}>
+                  {expenseCategoriesArray.map((expense) => (
+                    <SelectItem key={expense.value} value={expense.value} >
+                      {expense.label}
+                    </SelectItem>
+                  ))}
+                  
+                </Select>
+
                 <div className="mb-4">
                   <Input
+                    isRequired
                     type="text"
                     name="description"
                     placeholder="Write Your Expense Here"

@@ -63,7 +63,7 @@ export const ExpenseChart: React.FC<ExpenseChartProps> = ({ data }) => {
           showGridLines
           autoMinValue
           yAxisWidth={65}
-          categories={["expense", "income"]}
+          categories={["income","expense"]}
           colors={["green", "red"]}
           valueFormatter={valueFormatter}
           onValueChange={(v: any) => setValue(v)}
