@@ -85,10 +85,10 @@ export default function ExpenseForm() {
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onClose}>
-        <ModalContent style={{ height: "80%" }}>
+        <ModalContent >
           {(onClose) => (
             <form onSubmit={handleFormSubmit}>
-              <ModalHeader></ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Add Expense</ModalHeader>
               <ModalBody>
                 <div className="mb-4">
                   <Input
