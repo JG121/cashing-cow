@@ -93,7 +93,8 @@ export default function ExpenseForm() {
                 <div className="mb-4">
                   <Input
                     type="number"
-                    name="amount"
+                    label="Amount"
+                    labelPlacement="outside"
                     placeholder="Enter Expense Amount"
                     value={expenseData.amount.toString()}
                     onChange={(e) =>

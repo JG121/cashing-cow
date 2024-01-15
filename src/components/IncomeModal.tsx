@@ -42,10 +42,10 @@ export default function IncomeModal() {
               <ModalBody>
                 <Input
                   type="number"
+                  placeholder="Enter Income Amount"
                   label="Amount"
-                  isRequired
-                  placeholder="0.00"
                   labelPlacement="outside"
+                  isRequired
                   startContent={
                     <div className="pointer-events-none flex items-center"></div>
                   }
