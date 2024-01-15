@@ -35,7 +35,7 @@ export default function ExpenseForm() {
       }
 
       const newExpense = {
-        id: randomUUID(),
+        id: self.crypto.randomUUID(),
         username: currentUser.user?.emailAddresses[0].emailAddress,
         name: expenseData.description,
         amount: expenseData.amount,
